@@ -1,3 +1,5 @@
+/*If an extension needs to interact with web pages that the user loads (as opposed to pages that are included in the extension), then the extension must use a content script.*/
+
 //we do not need jquery to check if the document is loaded
 //Chrome injects content scripts after the DOM is complete
 
@@ -10,7 +12,7 @@ chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse){
     if(request.message === "clicked_browser_action"){
       var firstHref = $("a[href^='http']").eq(0).attr("href");
-
+      debugger;
       //console.log(firstHref);
       console.log("hello");
 
@@ -20,3 +22,8 @@ chrome.runtime.onMessage.addListener(
     }
   }
 )
+
+$("#test").click(function(){
+  alert("test");
+  chrome.runtime.sendMessage({"message": "init_bookmark"});
+});

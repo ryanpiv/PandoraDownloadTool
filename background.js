@@ -18,37 +18,57 @@ chrome.browserAction.onClicked.addListener(function(tab) {
   //});
 });
 
-function process_bookmarks(bookmarks)
+
+//Currently, this extension removes all bookmark titles
+//To do:
+//Medium: Add recursive functionality to grab 'oldtitle' and change title back to what it was before
+//Medium: Add buttons to either remove all or revert all bookmark titles
+//Large: Create dynamic checkbox list to allow users to select which bookmarks they want titles removed from
+//Will need to decipher between removing titles from folders and bookmarks, etc.
+
+function remove_all_titles(bookmarks)
 {
   debugger;
   for (var i=0; i<bookmarks.length; i++)
   {
     console.log(bookmarks);
-    console.log(bookmarks[0].children.length);
+    //console.log(bookmarks[0].children.length);
 
     for (var y=0; y<bookmarks[i].children.length; y++)
     {
       var id = bookmarks[i].children[y].id;
-      console.log(bookmarks[i].children[y].id);
+      //console.log(bookmarks[i].children[y].id);
 
       for (var x=0; x<bookmarks[i].children[y].children.length; x++)
       {
         //set all bookmark title logic here
-        if(bookmarks[i].children[y].children[x].title=="Google")
+        bookmarks[i].children[y].children[x].oldtitle = bookmarks[i].children[y].children[x].title;
+        var id = bookmarks[i].children[y].children[x].id;
+
+        chrome.bookmarks.update(String(id), {
+          title: ''
+        });
+        /*if(bookmarks[i].children[y].children[x].title=="Google")
         {
           //Removes a bookmark
           //chrome.bookmarks.remove(bookmarks[i].children[y].children[x].id);
-
-
-        }
+        }*/
       }
     }
   }
 }
 
+function revert_all_titles(bookmarks) {
 
+}
 
+function remove_one_title(bookmarks, title, id) {
 
+}
+
+function revert_one_title(bookmarks, title, id){
+
+}
 
 
 
