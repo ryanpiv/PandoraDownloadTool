@@ -1,6 +1,7 @@
 // Called when the user clicks on the browser action.
 chrome.browserAction.onClicked.addListener(function(tab) {
   // Send a message to the active tab
+  // use this when sending a message to the content script that is not a response of a message being received from content script
   // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
   //   var activeTab = tabs[0];
   //   chrome.tabs.sendMessage(activeTab.id, {"message": "clicked_browser_action"});
@@ -12,9 +13,10 @@ chrome.browserAction.onClicked.addListener(function(tab) {
     //     processNode(item);
     //   });
     // });
+    debugger;
 
     console.log("listing bookmarks");
-    chrome.bookmarks.getTree( process_bookmarks );
+
   //});
 });
 
@@ -31,7 +33,7 @@ function remove_all_titles(bookmarks)
   debugger;
   for (var i=0; i<bookmarks.length; i++)
   {
-    console.log(bookmarks);
+    //console.log(bookmarks);
     //console.log(bookmarks[0].children.length);
 
     for (var y=0; y<bookmarks[i].children.length; y++)
@@ -59,7 +61,33 @@ function remove_all_titles(bookmarks)
 }
 
 function revert_all_titles(bookmarks) {
+  debugger;
+  for (var i=0; i<bookmarks.length; i++)
+  {
+    console.log(bookmarks);
+    //console.log(bookmarks[0].children.length);
 
+    for (var y=0; y<bookmarks[i].children.length; y++)
+    {
+      var id = bookmarks[i].children[y].id;
+      //console.log(bookmarks[i].children[y].id);
+
+      for (var x=0; x<bookmarks[i].children[y].children.length; x++)
+      {
+        //set all bookmark title logic here
+        var id = bookmarks[i].children[y].children[x].id;
+
+        chrome.bookmarks.update(String(id), {
+          title: bookmarks[i].children[y].children[x].oldtitle
+        });
+        /*if(bookmarks[i].children[y].children[x].title=="Google")
+        {
+          //Removes a bookmark
+          //chrome.bookmarks.remove(bookmarks[i].children[y].children[x].id);
+        }*/
+      }
+    }
+  }
 }
 
 function remove_one_title(bookmarks, title, id) {
@@ -71,35 +99,13 @@ function revert_one_title(bookmarks, title, id){
 }
 
 
-
-
-
-
-
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse){
-    if(request.message === "open_new_tab") {
-      chrome.tabs.create({"url": request.url});
+    if(request.message === "remove_all_bookmarks") {
+      //chrome.tabs.create({"url": request.url});
+      chrome.bookmarks.getTree( remove_all_titles );
     }
-    if(request.message === "init_bookmark") {
-      debugger;
-      chrome.bookmarks.getTree(function(processNode){
-        itemTree.forEach(function(item){
-          processNode(item);
-        });
-      });
+    if(request.message === "revert_all_bookmarks") {
+      chrome.bookmarks.getTree( revert_all_titles );
     }
-  }
-)
-
-function processNode(node){
-  if(node.children){
-    node.children.forEach(function(child){
-      processNode(child);
-    });
-  }
-
-  if(node.url) {
-    console.log(node.url);
-  }
-}
+  });

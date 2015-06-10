@@ -23,7 +23,14 @@ chrome.runtime.onMessage.addListener(
   }
 )
 
-$("#test").click(function(){
-  alert("test");
-  chrome.runtime.sendMessage({"message": "init_bookmark"});
+$(document).ready(function(){
+  $("#remove_all_button").click(function(){
+    //alert("test");
+    chrome.runtime.sendMessage({message: "remove_all_bookmarks"});
+  });
+
+  $("#revert_all_button").click(function(){
+    alert("test");
+    chrome.runtime.sendMessage({message: "revert_all_bookmarks"});
+  });
 });
