@@ -14,9 +14,29 @@ chrome.browserAction.onClicked.addListener(function(tab) {
     //   });
     // });
     debugger;
+    var strHTML = '<ul>';
 
     console.log("listing bookmarks");
+    for (var i=0; i<bookmarks.length; i++)
+    {
+      for (var y=0; y<bookmarks[i].children.length; y++)
+      {
+        for (var x=0; x<bookmarks[i].children[y].children.length; x++)
+        {
+          //set all bookmark title logic here
+          var id = bookmarks[i].children[y].children[x].id;
+          var title = bookmarks[i].children[y].children[x].title;
 
+          strHTML += '<li><input type="checkbox" name="' + id + '" value="' + title + '></li>';
+
+          chrome.bookmarks.update(String(id), {
+            title: ''
+          });
+        }
+      }
+    }
+    strHML += ' </ul>';
+    $("div_checklist").append(strHML);
   //});
 });
 
